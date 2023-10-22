@@ -1,5 +1,12 @@
 <template>
-    <h1 class="">
-        Ibon
-    </h1>
+    <div class="bg-blue-500 flex-1">
+        <h1>Home</h1>
+        <div>
+            <div>
+                <p>For You</p>
+                <p>Following</p>
+            </div>
+        </div>
+    </div>
+
 </template>
