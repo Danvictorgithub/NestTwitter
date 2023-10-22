@@ -28,7 +28,7 @@
         </header>
         <div class="flex-1 items-stretch flex ">
             <slot />
-            <div class="w-[535px] bg-yellow-300 p-4">
+            <div class="w-[500px] bg-yellow-300 p-4">
                 <div class="w-[350px] flex flex-col gap-2 mb-4">
                     <h1 class="text-3xl font-bold pb-2">New Users</h1>
                     <User v-for="i in [1,2,3,4,5,6,7,8,9,10,1,2,3,4,5,6,7,8,9,10]"/>
