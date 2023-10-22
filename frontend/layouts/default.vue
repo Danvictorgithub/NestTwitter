@@ -28,12 +28,18 @@
         </header>
         <div class="flex-1 items-stretch flex ">
             <slot />
-            <div class="w-[535px] bg-yellow-500">
-                <div class="w-[350px] bg-yellow-400">
-                    <h1>New Users</h1>
-                    <h2 v-for="i in [1,2,3,4,5,6,7,8,9,1,2,3,4,5,6,7,8,9,1,2,3,4,5,6,7,8,9,1,2,3,4,5,6,7,8,9,]">Username</h2>
+            <div class="w-[535px] bg-yellow-300 p-4">
+                <div class="w-[350px] flex flex-col gap-2 mb-4">
+                    <h1 class="text-3xl font-bold pb-2">New Users</h1>
+                    <User v-for="i in [1,2,3,4,5,6,7,8,9,10,1,2,3,4,5,6,7,8,9,10]"/>
                 </div>
-                <h2 class="sticky top-0">Who to follow</h2>
+                <div class="pb-2 sticky top-10 ">
+                    <h2 class="text-3xl font-bold mb-4">Who to follow</h2>
+                    <div class="flex flex-col gap-2 mb-4">
+                        <User v-for="i in [1,2,3,4,5,6,7,8,9,10]"/>
+                    </div>
+                </div>
+                
             </div>
         </div>
 
