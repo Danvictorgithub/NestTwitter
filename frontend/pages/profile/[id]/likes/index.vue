@@ -9,11 +9,11 @@
         <div>
             <div class="relative h-[250px]">
                 <img src="/cover.jpg" class="h-[200px] w-full object-cover rounded-xl" alt="">
-                <img src="/profile.jpg" class="rounded-full absolute left-6 bottom-0 h-32 border-4">
+                <img src="/alien.jpg" class="rounded-full absolute left-6 bottom-0 h-32 w-32 object-cover border-4">
             </div>
         </div>
         <div>
-            <h1 class="text-2xl font-black items-center">Username</h1>
+            <h1 class="text-2xl font-black items-center">Abdul Salim</h1>
             <p class="text-gray-400">@Username123</p>
             <div class="flex gap-1 mt-4">
                 <span class="material-symbols-outlined">calendar_today</span>
@@ -29,12 +29,17 @@
                     <p class="text-gray-400">Followers</p>
                 </div>
             </div>
-            <div class="flex items-center text-center h-[75px] font-bold">
-                <NuxtLink to='./' class="w-full h-full flex items-center justify-center hover:bg-gray-900">Replies</NuxtLink>
+            <div class="flex items-center text-center h-[75px] font-bold text-gray-400">
                 <NuxtLink to='./' class="w-full h-full flex items-center justify-center hover:bg-gray-900">Posts</NuxtLink>
-                <NuxtLink to='./' class="w-full h-full flex items-center justify-center hover:bg-gray-900">Media</NuxtLink>
-                <NuxtLink to='./' class="w-full h-full flex items-center justify-center hover:bg-gray-900">Likes</NuxtLink>
+                <NuxtLink to='./replies' class="w-full h-full flex items-center justify-center hover:bg-gray-900">Replies</NuxtLink>
+                <NuxtLink to='./media' class="w-full h-full flex items-center justify-center hover:bg-gray-900">Media</NuxtLink>
+                <NuxtLink to='./likes' class="w-full h-full flex items-center justify-center hover:bg-gray-900">Likes</NuxtLink>
             </div>
         </div>
     </div>
 </template>
+<style>
+.router-link-exact-active {
+    color:white
+}
+</style>
