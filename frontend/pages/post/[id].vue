@@ -2,7 +2,7 @@
     const {id} = useRoute().params;
 </script>
 <template>
-    <article class="flex-1 flex flex-col p-4 w-[600px] bg-black">
+    <article class="flex-1 flex flex-col p-4 w-[600px]">
         <NuxtLink to='/' class="h-12 flex items-center text-white mb-6">
             <span class="material-symbols-outlined text-xl mx-3">arrow_back</span> 
             <p class="text-2xl font-bold">Post</p>
