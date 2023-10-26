@@ -41,7 +41,7 @@
         </div>
     </div>
 </template>
-<style>
+<style scoped>
 .router-link-exact-active {
     color:white
 }

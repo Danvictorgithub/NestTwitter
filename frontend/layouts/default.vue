@@ -9,7 +9,7 @@
 
                     </div>
                     <nav class="grid gap-4 text-white font-bold text-xl">
-                        <NuxtLink class="flex items-center" to="/"><span class="material-symbols-outlined text-3xl mr-3">home</span>Home</NuxtLink>
+                        <NuxtLink class="flex items-center" to="/home"><span class="material-symbols-outlined text-3xl mr-3">home</span>Home</NuxtLink>
                         <NuxtLink class="flex items-center" to="/explore"><span class="material-symbols-outlined text-3xl mr-3">search</span>Explore</NuxtLink>
                         <NuxtLink class="flex items-center" to="/profile/1/"><span class="material-symbols-outlined text-3xl mr-3">person</span>Profile</NuxtLink>
                         <button class="btn border-2 border-red-600 bg-red-600 hover:border-white hover:bg-white hover:text-red-600 active:bg-zinc-950  ">post</button>
@@ -42,10 +42,8 @@
                     <div class="flex flex-col gap-2 mb-4">
                         <User v-for="i in [1,2,3,4,5,6,7,8,9,10]"/>
                     </div>
-                </div>
-                
+                </div> 
             </div>
         </div>
-
     </div>
 </template>

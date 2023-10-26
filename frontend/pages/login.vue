@@ -30,7 +30,7 @@
     </div>
 </template>
 <style scoped lang="postcss">
-    .router-link-exact-active {
-        @apply border-b-2 border-white
-    }
+.router-link-exact-active {
+    @apply border-b-2 border-white
+}
 </style>
