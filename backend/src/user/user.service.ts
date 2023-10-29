@@ -15,8 +15,8 @@ export class UserService {
     return await this.prisma.user.create({data:createUserDto});
   }
 
-  async findAll():Promise<User[]> {
-    return await this.prisma.user.findMany();
+  async findAll():Promise<{username:String,name:String,createdAt:Date}[]> {
+    return await this.prisma.user.findMany({select:{username:true,name:true,createdAt:true}});
   }
 
   async findOne(id: number) {
@@ -27,7 +27,14 @@ export class UserService {
     return `This action updates a #${id} user`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async remove(id: number) {
+    const user = await this.prisma.user.findFirst({where:{id}});
+    if (user) {
+      await this.prisma.user.delete({where:{id}});
+      return {message:`Successfully removed user #${id}`};
+    }
+    else {
+      return {message:`user #${id} does not exist`}
+    }
   }
 }
