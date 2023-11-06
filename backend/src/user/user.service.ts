@@ -2,7 +2,7 @@ import { BadRequestException, HttpException, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { User } from '@prisma/client';
+// import { User } from '@prisma/client';
 
 @Injectable()
 export class UserService {
@@ -20,7 +20,7 @@ export class UserService {
   }
 
   async findOne(id: number) {
-    return await this.prisma.user.findUnique({where:{id}})
+    return await this.prisma.user.findUnique({where:{id},select:{username:true,name:true,createdAt:true}})
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
@@ -37,4 +37,10 @@ export class UserService {
       return {message:`user #${id} does not exist`}
     }
   }
+
+  // non REST operations
+  async findOneByUsername(username:string) {
+    return await this.prisma.user.findUnique({where:{username}});
+  }
+
 }

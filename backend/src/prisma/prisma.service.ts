@@ -4,6 +4,7 @@ import { PrismaClient } from '@prisma/client';
 
 export class PrismaService extends PrismaClient implements OnModuleInit{
     async onModuleInit() {
+        console.log("Prisma is Successfully Initialized");
         await this.$connect();
     }
 }
