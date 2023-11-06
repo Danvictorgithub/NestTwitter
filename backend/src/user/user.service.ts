@@ -2,6 +2,7 @@ import { BadRequestException, HttpException, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
+import * as bcrypt from "bcryptjs";
 // import { User } from '@prisma/client';
 
 @Injectable()
@@ -12,7 +13,14 @@ export class UserService {
     if (userExists) {
       throw new BadRequestException('user already exist');
     }
-    return await this.prisma.user.create({data:createUserDto});
+    bcrypt.hash(createUserDto.password,parseInt(process.env.SECRET_KEY), async (err,hash)=>{
+      if (err) {
+        throw new HttpException(err,500);
+      }
+      createUserDto.password = hash;
+      await this.prisma.user.create({data:createUserDto});
+    })
+    return {message:`Successfully created user ${createUserDto.username}`};
   }
 
   async findAll():Promise<{username:String,name:String,createdAt:Date}[]> {
