@@ -45,10 +45,9 @@ export class UserService {
       return {message:`user #${id} does not exist`}
     }
   }
-
+  
   // non REST operations
   async findOneByUsername(username:string) {
     return await this.prisma.user.findUnique({where:{username}});
   }
-
 }

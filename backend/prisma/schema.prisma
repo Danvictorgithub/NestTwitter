@@ -16,6 +16,9 @@ model User {
   name String
   password String
   createdAt DateTime @default(now())
+  isAdmin Boolean @default(false)
+  userProfile String @default("")
+  UserCover String @default("")
   posts Post[]
 }
 
