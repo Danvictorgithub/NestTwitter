@@ -4,11 +4,15 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import * as bcrypt from "bcryptjs";
 import { JwtService } from 'src/jwt/jwt.service';
+import { SupabaseService } from 'src/supabase/supabase.service';
 // import { User } from '@prisma/client';
 
 @Injectable()
 export class UserService {
-  constructor(private prisma:PrismaService, private jwtService:JwtService) { }
+  constructor(
+    private prisma:PrismaService, 
+    private jwtService:JwtService,
+    private supabase:SupabaseService) { }
 
   async create(createUserDto: CreateUserDto) {
     const userExists = await this.prisma.user.findFirst({where:{username:createUserDto.username}});
@@ -33,10 +37,18 @@ export class UserService {
     return await this.prisma.user.findUnique({where:{id},select:{username:true,name:true,createdAt:true}})
   }
 
-  async update(id: number, updateUserDto: UpdateUserDto, BearerToken:string) {
+  async update(
+    id: number, 
+    updateUserDto: UpdateUserDto, 
+    BearerToken:string,
+    files:{userProfile?: Express.Multer.File[],userCover?:Express.Multer.File[]}) {
     const token = BearerToken.split(' ')[1];
     const UserObj:any = this.jwtService.decode(token);
     const UserId = UserObj.id;
+    // Checks for user profile and user cover
+
+    (files.userProfile !== undefined) ? updateUserDto.userProfile = await this.supabase.uploadFile(files.userProfile[0]) : null;
+    (files.userCover  !== undefined) ? updateUserDto.userCover = await this.supabase.uploadFile(files.userCover[0]) : null;
     if (id !== UserId) {
       throw new UnauthorizedException('You are not authorized to update this user');
     }
@@ -44,7 +56,6 @@ export class UserService {
       data: updateUserDto,
       where: { id }
     });
-    console.log(user);
     return {message:`Successfully updated user ${UserId}`};
   }
 

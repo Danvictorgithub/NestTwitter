@@ -1,9 +1,10 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ValidationPipe, UseGuards, Headers } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ValidationPipe, UseGuards, Headers, UseInterceptors, UploadedFiles } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { RolesGuard } from 'src/roles/roles.guard';
 import { JwtAuthGuard } from 'src/auth/jwt.auth.guard';
+import { FileFieldsInterceptor, FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('user')
 @UseGuards(JwtAuthGuard)
@@ -26,8 +27,17 @@ export class UserController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto, @Headers('Authorization') BearerToken:string) {
-    return this.userService.update(+id, updateUserDto,BearerToken);
+  @UseInterceptors(FileFieldsInterceptor(
+    [
+      {name:'userProfile', maxCount: 1},
+      {name:'userCover', maxCount: 1},
+    ]
+  ))
+  update(
+    @UploadedFiles() files:{userProfile?: Express.Multer.File[],userCover?:Express.Multer.File[]}, 
+    @Param('id') id: string, @Body() updateUserDto: UpdateUserDto, 
+    @Headers('Authorization') BearerToken:string) {
+    return this.userService.update(+id, updateUserDto,BearerToken,files);
   } 
   @UseGuards(RolesGuard)
   @Delete(':id')
