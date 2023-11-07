@@ -1,13 +1,15 @@
-import { BadRequestException, HttpException, Injectable } from '@nestjs/common';
+import { BadRequestException, HttpException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import * as bcrypt from "bcryptjs";
+import { JwtService } from 'src/jwt/jwt.service';
 // import { User } from '@prisma/client';
 
 @Injectable()
 export class UserService {
-  constructor(private prisma:PrismaService) { }
+  constructor(private prisma:PrismaService, private jwtService:JwtService) { }
+
   async create(createUserDto: CreateUserDto) {
     const userExists = await this.prisma.user.findFirst({where:{username:createUserDto.username}});
     if (userExists) {
@@ -31,8 +33,19 @@ export class UserService {
     return await this.prisma.user.findUnique({where:{id},select:{username:true,name:true,createdAt:true}})
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async update(id: number, updateUserDto: UpdateUserDto, BearerToken:string) {
+    const token = BearerToken.split(' ')[1];
+    const UserObj:any = this.jwtService.decode(token);
+    const UserId = UserObj.id;
+    if (id !== UserId) {
+      throw new UnauthorizedException('You are not authorized to update this user');
+    }
+    const user = await this.prisma.user.update({
+      data: updateUserDto,
+      where: { id }
+    });
+    console.log(user);
+    return {message:`Successfully updated user ${UserId}`};
   }
 
   async remove(id: number) {
