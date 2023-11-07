@@ -7,7 +7,7 @@ import { JwtAuthGuard } from 'src/auth/jwt.auth.guard';
 import { FileFieldsInterceptor, FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('user')
-@UseGuards(JwtAuthGuard)
+
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
@@ -15,17 +15,20 @@ export class UserController {
   create(@Body(new ValidationPipe) createUserDto: CreateUserDto) {
     return this.userService.create(createUserDto);
   }
-
+  
+  @UseGuards(JwtAuthGuard)
   @Get()
   findAll() {
     return this.userService.findAll();
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.userService.findOne(+id);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Patch(':id')
   @UseInterceptors(FileFieldsInterceptor(
     [
@@ -38,7 +41,8 @@ export class UserController {
     @Param('id') id: string, @Body() updateUserDto: UpdateUserDto, 
     @Headers('Authorization') BearerToken:string) {
     return this.userService.update(+id, updateUserDto,BearerToken,files);
-  } 
+  }
+  @UseGuards(JwtAuthGuard)
   @UseGuards(RolesGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {
