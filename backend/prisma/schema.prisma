@@ -20,7 +20,7 @@ model User {
   userProfile String @default("")
   userCover String @default("")
   posts Post[]
-  followedBy User[]  @relation("UserFollows")
+  followers User[]  @relation("UserFollows")
   following  User[]  @relation("UserFollows")
 }
 

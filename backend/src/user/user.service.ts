@@ -1,4 +1,4 @@
-import { BadRequestException, HttpException, Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, HttpException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -34,7 +34,13 @@ export class UserService {
   }
 
   async findOne(id: number) {
-    return await this.prisma.user.findUnique({where:{id},select:{username:true,name:true,createdAt:true,posts:true}});
+    const user = await this.prisma.user.findUnique({where:{id},select:{username:true,name:true,userCover:true,userProfile:true,createdAt:true,posts:true,_count:{select:{followers:true,following:true}}}}); 
+    if (user) {
+      return user;
+    }
+    else {
+      throw new NotFoundException("User not found");
+    }
   }
 
   async update(

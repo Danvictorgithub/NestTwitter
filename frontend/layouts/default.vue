@@ -1,6 +1,19 @@
 <script setup>
+    import {sampleSize} from "lodash";
+    import {format} from "date-fns"
     const {username,name,id,userProfile} = useUserObj().value;
     const {logout} = useAuths();
+    const apiLink = useAPILink();
+    const cookie = useCookie('token');
+    const {data, error} = await useFetch(`${apiLink.value}user`,{
+        headers: {
+            ContentType:'application/json',
+            Authorization: `Bearer ${cookie.value}`
+        },
+        method: 'GET'
+    });
+    data.value.forEach(user => user.createdAt = format(new Date(user.createdAt),'MMM yyyy'))
+    const fiveRandomUser = sampleSize(data.value,5);  
 </script>
 <template>
     <div class="flex container mx-auto h-full overflow-auto items-start no-scrollbar">
@@ -40,12 +53,12 @@
             <div class="w-[500px p-4 text-white">
                 <div class="w-[350px] flex flex-col gap-2 mb-4 rounded-xl bg-zinc-900 p-4">
                     <h1 class="text-3xl font-bold pb-2">New Users</h1>
-                    <User v-for="i in [1,2,3,4,5,6,7,8,9,10,1,2,3,4,5,6,7,8,9,10]"/>
+                    <User v-for="user in data" v-bind="user"/>
                 </div>
                 <div class="pb-2 sticky top-10 mb-4 rounded-xl bg-zinc-900 p-4">
                     <h2 class="text-3xl font-bold mb-4">Who to follow</h2>
                     <div class="flex flex-col gap-2 mb-4">
-                        <User v-for="i in [1,2,3,4,5,6,7,8,9,10]"/>
+                        <User v-for="user in fiveRandomUser" v-bind="user" />
                     </div>
                 </div> 
             </div>
