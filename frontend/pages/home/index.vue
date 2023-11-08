@@ -1,3 +1,8 @@
+<script setup lang="ts">
+    definePageMeta({
+        middleware:'auth'
+    })
+</script>
 <template>
     <div class="flex-1 flex flex-col w-[600px] text-white p-2">
         <div class="sticky top-0 bg-opacity-80 backdrop-blur-md">

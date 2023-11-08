@@ -1,3 +1,6 @@
+<script setup>
+    const {username,name,id} = useUserObj().value;
+</script>
 <template>
     <div class="flex container mx-auto h-full overflow-auto items-start">
         <header class=" flex flex-col items-end w-[450px] h-full">
@@ -6,12 +9,11 @@
                     <div class="flex justify-start items-baseline">
                         <img src="/favicon.png" class="h-12 mb-4" alt="logo">
                         <h1 class="text-white font-black text-3xl">Ibon</h1>
-
                     </div>
                     <nav class="grid gap-4 text-white font-bold text-xl">
                         <NuxtLink class="flex items-center" to="/home"><span class="material-symbols-outlined text-3xl mr-3">home</span>Home</NuxtLink>
                         <NuxtLink class="flex items-center" to="/explore"><span class="material-symbols-outlined text-3xl mr-3">search</span>Explore</NuxtLink>
-                        <NuxtLink class="flex items-center" to="/profile/1/"><span class="material-symbols-outlined text-3xl mr-3">person</span>Profile</NuxtLink>
+                        <NuxtLink class="flex items-center" :to="`/profile/${id}`" ><span class="material-symbols-outlined text-3xl mr-3">person</span>Profile</NuxtLink>
                         <button class="btn border-2 border-red-600 bg-red-600 hover:border-white hover:bg-white hover:text-red-600 active:bg-zinc-950  ">post</button>
                     </nav>
                 </div>
@@ -20,8 +22,8 @@
                         <div class="flex">
                             <span class="material-symbols-outlined text-5xl mr-3 text-white">account_circle</span> 
                             <div class="">
-                                <p class="font-bold text-white">Username</p>
-                                <p class="text-gray-600">@Username123</p>
+                                <p class="font-bold text-white">{{ name }}</p>
+                                <p class="text-gray-600">@{{username}}</p>
                             </div>
                         </div>
                         
