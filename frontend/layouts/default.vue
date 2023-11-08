@@ -1,5 +1,6 @@
 <script setup>
-    const {username,name,id} = useUserObj().value;
+    const {username,name,id,userProfile} = useUserObj().value;
+    const {logout} = useAuths();
 </script>
 <template>
     <div class="flex container mx-auto h-full overflow-auto items-start">
@@ -20,14 +21,16 @@
                 <div class="flex-1 flex items-end ">
                     <div class="flex items-center justify-between w-full">
                         <div class="flex">
-                            <span class="material-symbols-outlined text-5xl mr-3 text-white">account_circle</span> 
+                            <span class="material-symbols-outlined text-5xl mr-3 text-white" v-if="userProfile == ''">account_circle</span>
+                            <img :src="userProfile" class="rounded-full left-6 bottom-0 h-16 w-16 object-cover" alt="user_profile" v-else>
                             <div class="">
                                 <p class="font-bold text-white">{{ name }}</p>
                                 <p class="text-gray-600">@{{username}}</p>
                             </div>
                         </div>
-                        
-                        <span class="material-symbols-outlined text-3xl font-black text-white">logout</span>
+                        <button @click="logout" class="hover:bg-white hover:text-black text-white h-12 w-12 rounded-lg">
+                            <span class="material-symbols-outlined text-3xl font-black">logout</span>
+                        </button> 
                     </div>
                 </div>
             </div>

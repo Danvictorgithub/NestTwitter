@@ -1,22 +1,28 @@
 export default defineNuxtRouteMiddleware(async (to,from) => {
+    const config = useRuntimeConfig()
     const token = useCookie('token');
     const apiLink = useAPILink();
+    console.log(token.value === undefined);
     if (token.value === undefined) {
-        await navigateTo('/login');
+        console.log('This is called');
+        return await navigateTo('/login'); 
     }
     // Verify token
-    const result = await $fetch(`${apiLink.value}auth/validate`,{
+    let isInvalidToken = null;
+    const result:any = await $fetch(`${apiLink.value}auth/validate`,{
         headers:{
             Authorization: `Bearer ${token.value}`,
             ContentType: 'application/json',
         },
         method: 'GET',
-    }).catch(error => {
-        navigateTo("/login");
+    }).catch(async () => {
+        isInvalidToken = true;
     });
+    if (isInvalidToken) {
+        return await navigateTo('/login',{ redirectCode: 301 });
+    }
     if (result) {
         const userObj = useUserObj();
         userObj.value = result;
-        console.log(userObj.value.id);
     }
 })

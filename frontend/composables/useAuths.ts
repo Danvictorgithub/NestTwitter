@@ -21,7 +21,10 @@ export const useAuths = () => {
     }
     const logout = async () => {
         const userObj = useUserObj();
-        const userObj.value = {username:"",name:"",id=""}
+        userObj.value = {username:"",name:"",id:NaN,userProfile:""}
+        const cookie = useCookie('token');
+        cookie.value = undefined;
+        await navigateTo('/login'); 
     }
-    return {signup,login};
+    return {signup,login,logout};
 }
