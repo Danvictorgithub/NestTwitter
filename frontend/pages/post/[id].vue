@@ -1,4 +1,7 @@
-<script setup>
+<script setup lang="ts">
+    definePageMeta({
+        middleware:'auth'
+    })
     const {id} = useRoute().params;
 </script>
 <template>

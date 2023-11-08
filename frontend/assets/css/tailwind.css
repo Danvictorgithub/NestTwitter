@@ -9,6 +9,10 @@
         position:relative;
         @apply bg-zinc-950;
     }
+    .no-scrollbar {
+        -ms-overflow-style: none; /* IE and Edge */
+        scrollbar-width: none; /* Firefox */
+      }
 }
 
 .btn {

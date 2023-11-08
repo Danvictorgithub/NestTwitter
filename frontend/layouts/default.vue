@@ -3,7 +3,7 @@
     const {logout} = useAuths();
 </script>
 <template>
-    <div class="flex container mx-auto h-full overflow-auto items-start">
+    <div class="flex container mx-auto h-full overflow-auto items-start no-scrollbar">
         <header class=" flex flex-col items-end w-[450px] h-full">
             <div class="flex flex-col flex-1 p-4 w-[300px] h-full absolute">
                 <div class="">
