@@ -17,7 +17,7 @@ export class UserService {
   async create(createUserDto: CreateUserDto) {
     const userExists = await this.prisma.user.findFirst({where:{username:createUserDto.username}});
     if (userExists) {
-      throw new BadRequestException('user already exist');
+      throw new BadRequestException({message:['user already exist']});
     }
     bcrypt.hash(createUserDto.password,parseInt(process.env.SECRET_KEY), async (err,hash)=>{
       if (err) {
@@ -26,7 +26,7 @@ export class UserService {
       createUserDto.password = hash;
       await this.prisma.user.create({data:createUserDto});
     })
-    return {message:`Successfully created user ${createUserDto.username}`};
+    return {message:[`Successfully created user ${createUserDto.username}`]};
   }
 
   async findAll():Promise<{username:String,name:String,createdAt:Date}[]> {
