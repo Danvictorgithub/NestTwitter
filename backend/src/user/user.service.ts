@@ -34,7 +34,7 @@ export class UserService {
   }
 
   async findOne(id: number) {
-    return await this.prisma.user.findUnique({where:{id},select:{username:true,name:true,createdAt:true}})
+    return await this.prisma.user.findUnique({where:{id},select:{username:true,name:true,createdAt:true,posts:true}});
   }
 
   async update(
