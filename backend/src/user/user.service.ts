@@ -24,7 +24,7 @@ export class UserService {
         throw new HttpException(err,500);
       }
       createUserDto.password = hash;
-      await this.prisma.user.create({data:createUserDto});
+      await this.prisma.user.create({data:{...createUserDto,name:createUserDto.username}});
     })
     return {message:[`Successfully created user ${createUserDto.username}`]};
   }
@@ -49,6 +49,12 @@ export class UserService {
 
     (files.userProfile !== undefined) ? updateUserDto.userProfile = await this.supabase.uploadFile(files.userProfile[0]) : null;
     (files.userCover  !== undefined) ? updateUserDto.userCover = await this.supabase.uploadFile(files.userCover[0]) : null;
+    
+    const userExists = await this.prisma.user.findFirst({where:{username:updateUserDto.username}});
+    if (userExists) {
+      throw new BadRequestException({message:['user already exist']});
+    }
+
     if (id !== UserId) {
       throw new UnauthorizedException('You are not authorized to update this user');
     }

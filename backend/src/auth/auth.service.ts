@@ -18,7 +18,7 @@ export class AuthService {
     }
     // Returns JWT Bearer Token
     async login(user:any) {
-        const payload = {username: user.username, id: user.id,isAdmin: user.isAdmin};
+        const payload = {username: user.username, id: user.id,isAdmin: user.isAdmin,name:user.name};
         return {
             // Calls Passport JWTStrategy
             access_token: this.jwtService.sign(payload)

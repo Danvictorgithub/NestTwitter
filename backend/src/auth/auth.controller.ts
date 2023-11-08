@@ -12,7 +12,7 @@ export class AuthController {
         return this.authService.login(req.user);
     }
 
-    @Get('protected')
+    @Get('validate')
     @UseGuards(JwtAuthGuard)
     protected(@Request() req):any {
         return req.user;
