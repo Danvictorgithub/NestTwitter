@@ -1,19 +1,29 @@
 <script setup>
     import {sampleSize} from "lodash";
-    import {format} from "date-fns"
+    import {format,compareDesc} from "date-fns"
+    import {nanoid} from "nanoid";
     const {username,name,id,userProfile} = useUserObj().value;
     const {logout} = useAuths();
     const apiLink = useAPILink();
     const cookie = useCookie('token');
-    const {data, error} = await useFetch(`${apiLink.value}user`,{
+    const randomUsers = ref([]);
+    const {data, error, pending} = await useFetch(`${apiLink.value}user`,{
+        key:nanoid(),
         headers: {
             ContentType:'application/json',
             Authorization: `Bearer ${cookie.value}`
         },
         method: 'GET'
     });
-    data.value.forEach(user => user.createdAt = format(new Date(user.createdAt),'MMM yyyy'))
-    const fiveRandomUser = sampleSize(data.value,5);  
+    const datapending = ref(pending.pending);
+
+    watchEffect(() => {
+        datapending.value = pending.value;
+        data.value.forEach((user) => {
+            user.createdAt = format(new Date(user.createdAt), 'MMM dd yyyy');
+        });
+        randomUsers.value = sampleSize(data.value,5);
+    })
 </script>
 <template>
     <div class="flex container mx-auto h-full overflow-auto items-start no-scrollbar">
@@ -58,7 +68,7 @@
                 <div class="pb-2 sticky top-10 mb-4 rounded-xl bg-zinc-900 p-4">
                     <h2 class="text-3xl font-bold mb-4">Who to follow</h2>
                     <div class="flex flex-col gap-2 mb-4">
-                        <User v-for="user in fiveRandomUser" v-bind="user" />
+                        <User v-for="user in randomUsers" v-bind="user" />
                     </div>
                 </div> 
             </div>
