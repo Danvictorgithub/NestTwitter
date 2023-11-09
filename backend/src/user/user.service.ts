@@ -34,7 +34,27 @@ export class UserService {
   }
 
   async findOne(id: number) {
-    const user = await this.prisma.user.findUnique({where:{id},select:{username:true,name:true,userCover:true,userProfile:true,createdAt:true,posts:true,_count:{select:{followers:true,following:true}}}}); 
+    const user = await this.prisma.user.findUnique({
+      where:{id},
+      select:{
+        username:true,
+        name:true,
+        userCover:true,
+        userProfile:true,
+        createdAt:true,
+        _count:{select:{followers:true,following:true}},
+        posts:{include:{
+          author:{
+            select:{
+              username:true,
+              name:true,
+              userProfile:true,
+              createdAt:true,
+            }
+          },
+          commentTo:true,_count:{select:{commentBy:true}}}},
+      },
+    }); 
     if (user) {
       return user;
     }

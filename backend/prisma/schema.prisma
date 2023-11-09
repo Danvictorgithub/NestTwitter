@@ -19,9 +19,10 @@ model User {
   isAdmin Boolean @default(false)
   userProfile String @default("")
   userCover String @default("")
-  posts Post[]
   followers User[]  @relation("UserFollows")
   following  User[]  @relation("UserFollows")
+  posts Post[]
+  viewedPosts Post[] @relation("ViewsToViewer")
 }
 
 model Post {
@@ -32,10 +33,18 @@ model Post {
   updatedAt DateTime      @updatedAt
   author    User          @relation(fields: [authorId], references: [id])
   authorId  Int
+  hashtags Hashtag[] @relation("HashtagPosts")
+  views User[] @relation("ViewsToViewer")
   commentTo Post? @relation("PostComments",fields: [commentId],references: [id])
   commentId Int?
   commentBy Post[] @relation("PostComments")
 }
 
+model Hashtag {
+  id        Int          @id @default(autoincrement())
+  name String @unique
+  createdAt DateTime @default(now())
+  posts Post[] @relation("HashtagPosts") 
+}
 
 

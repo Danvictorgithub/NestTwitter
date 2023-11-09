@@ -4,19 +4,37 @@ import { UpdatePostDto } from './dto/update-post.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { JwtService } from 'src/jwt/jwt.service';
 import { SupabaseService } from 'src/supabase/supabase.service';
+import { HashtagService } from 'src/hashtag/hashtag.service';
 
 @Injectable()
 export class PostService {
-  constructor(private prisma: PrismaService,private jwtService:JwtService,private supabase:SupabaseService) { }
+  constructor(
+    private prisma: PrismaService,
+    private jwtService:JwtService,
+    private supabase:SupabaseService,
+    private hashtagService:HashtagService,
+    ) { }
+
   async create(createPostDto: CreatePostDto,BearerToken:string,file) {
-    const token = BearerToken.split(' ')[1];
-    const UserObj:any = this.jwtService.decode(token);
-    if (file !== undefined) {
-      createPostDto.image = await this.supabase.uploadFile(file);
-    }
-    const post = await this.prisma.post.create({data:{...createPostDto,author:{connect:{id:UserObj.id}}}});
-    return post;
+    // const token = BearerToken.split(' ')[1];
+    // const UserObj:any = this.jwtService.decode(token);
+    // if (file !== undefined) {
+    //   createPostDto.image = await this.supabase.uploadFile(file);
+    // }
+    // const post = await this.prisma.post.create({data:{...createPostDto,author:{connect:{id:UserObj.id}}}});
+    // const hashtags = this.hashtagService.findHashtags(post.content);
+    // console.log(hashtags);
+    // const numOfHashtags = await this.hashtagService.create(hashtags,post.id);
+    // return {...post,count:numOfHashtags};
+
+    return await this.prisma.hashtag.findMany({
+      include: {
+        posts: true
+      },
+    });
+    
   }
+
   async createReply(createPostDto: CreatePostDto,BearerToken:string,file,id:string) {
     const token = BearerToken.split(' ')[1];
     const UserObj:any = this.jwtService.decode(token);
@@ -30,11 +48,11 @@ export class PostService {
   async findAll() {
     return await this.prisma.post.findMany({include:{commentBy:true}});
   }
-  async findAllPostByUser(id:number) {
-    return await this.prisma.post.findMany({where:{authorId:id}});
-  }
 
-  findOne(id: number) {
+  findOne(id: number,BearerToken:string) {
+    const token = BearerToken.split(' ')[1];
+    const UserObj:any = this.jwtService.decode(token);
+    
     return this.prisma.post.findUnique({where:{id}});
   }
 

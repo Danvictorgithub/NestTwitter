@@ -35,14 +35,9 @@ export class PostController {
     return this.postService.findAll();
   }
 
-  @Get()
-  findAllPostByUser(@Param('id') id:number) {
-    return this.postService.findAllPostByUser(id);
-  }
-
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.postService.findOne(+id);
+  findOne(@Param('id') id: string,@Headers('Authorization') BearerToken:string) {
+    return this.postService.findOne(+id,BearerToken);
   }
 
   @Patch(':id')
