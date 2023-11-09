@@ -1,11 +1,7 @@
 export default defineNuxtRouteMiddleware(async (to,from) => {
-    const config = useRuntimeConfig()
     const token = useCookie('token');
     const apiLink = useAPILink();
-    console.log(apiLink);
-    console.log(token.value === undefined);
     if (token.value === undefined) {
-        console.log('This is called');
         return await navigateTo('/login'); 
     }
     // Verify token

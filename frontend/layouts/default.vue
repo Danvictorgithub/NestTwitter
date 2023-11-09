@@ -6,27 +6,33 @@
     const {logout} = useAuths();
     const apiLink = useAPILink();
     const cookie = useCookie('token');
-    const randomUsers = ref([]);
+    // Fetch data
     const {data, error, pending} = await useFetch(`${apiLink.value}user`,{
+        // key:useRoute().fullPath,
+        lazy:true,
         key:nanoid(),
+        transform:(datas) => {
+            datas.forEach((data) => {
+                data.createdAt = format(new Date(data.createdAt), 'MMM dd yyyy');
+            });
+            return datas;
+        },
         headers: {
             ContentType:'application/json',
             Authorization: `Bearer ${cookie.value}`
         },
         method: 'GET'
     });
-    const datapending = ref(pending.pending);
-
-    watchEffect(() => {
-        datapending.value = pending.value;
-        data.value.forEach((user) => {
-            user.createdAt = format(new Date(user.createdAt), 'MMM dd yyyy');
-        });
-        randomUsers.value = sampleSize(data.value,5);
+    const newUsers = useState("newUsers",() => {
+        return data;
     })
+    const randomUsers = useState("randomUsers",() => {
+        return sampleSize(data.value,5);
+    });
 </script>
 <template>
     <div class="flex container mx-auto h-full overflow-auto items-start no-scrollbar">
+        <NuxtLoadingIndicator/>
         <header class=" flex flex-col items-end w-[450px] h-full">
             <div class="flex flex-col flex-1 p-4 w-[300px] h-full absolute">
                 <div class="">
@@ -60,15 +66,15 @@
         </header>
         <div class="flex-1 items-stretch flex">
             <slot />
-            <div class="w-[500px p-4 text-white">
+            <div class=" p-4 text-white">
                 <div class="w-[350px] flex flex-col gap-2 mb-4 rounded-xl bg-zinc-900 p-4">
                     <h1 class="text-3xl font-bold pb-2">New Users</h1>
-                    <User v-for="user in data" v-bind="user"/>
+                    <User v-for="user in newUsers" :key="nanoid()" v-bind="user"/>
                 </div>
                 <div class="pb-2 sticky top-10 mb-4 rounded-xl bg-zinc-900 p-4">
                     <h2 class="text-3xl font-bold mb-4">Who to follow</h2>
                     <div class="flex flex-col gap-2 mb-4">
-                        <User v-for="user in randomUsers" v-bind="user" />
+                        <User v-for="user in randomUsers" :key="nanoid()" v-bind="user" />
                     </div>
                 </div> 
             </div>

@@ -3,10 +3,15 @@
     definePageMeta({
         middleware:'auth'
     })
+    import {nanoid} from "nanoid";
     const {id} = useRoute().params;
     const apiLink:Ref<string> = useAPILink();
     const cookie = useCookie('token');
-    const {data, error}:any = await useFetch(`${apiLink.value}user/${id}`, {
+    const {data, error, pending}:any = await useFetch(`${apiLink.value}user/${id}`, {
+        transform:(datas:any) => {
+            datas.createdAt = format(new Date(datas.createdAt), 'MMM dd yyyy');
+            return datas;
+        },
         headers: {
             ContentType: 'applicaton/json',
             Authorization: `Bearer ${cookie.value}`
@@ -16,7 +21,6 @@
     if (error.value ) {
         throw createError({statusCode:404,message:'User not found'});
     }
-    console.log(data.userProfile)
 </script>
 <template>
     <div class="flex-1 flex flex-col px-4 w-[600px] text-white">
@@ -37,7 +41,7 @@
             <p class="text-gray-400">@{{ data.username }}</p>
             <div class="flex gap-1 mt-4">
                 <span class="material-symbols-outlined">calendar_today</span>
-                <p>{{ format(new Date(data.createdAt),'MMMM dd yyyy') }}</p>
+                <p>{{ data.createdAt}}</p>
             </div>
             <div class="flex gap-4 py-3">
                 <div class="flex gap-1">
@@ -50,17 +54,18 @@
                 </div>
             </div>
             <div class="flex items-center text-center h-[75px] font-bold text-gray-400">
-                <NuxtLink to='./' class="w-full h-full flex items-center justify-center hover:bg-gray-900">Posts</NuxtLink>
-                <NuxtLink to='./replies' class="w-full h-full flex items-center justify-center hover:bg-gray-900">Replies</NuxtLink>
-                <NuxtLink to='./media' class="w-full h-full flex items-center justify-center hover:bg-gray-900">Media</NuxtLink>
-                <NuxtLink to='./likes' class="w-full h-full flex items-center justify-center hover:bg-gray-900">Likes</NuxtLink>
+                <NuxtLink :to="`/profile/${id}`" class="w-full h-full flex items-center justify-center hover:bg-gray-900">Posts</NuxtLink>
+                <NuxtLink :to="`/profile/${id}/replies`" class="w-full h-full flex items-center justify-center hover:bg-gray-900">Replies</NuxtLink>
+                <NuxtLink :to="`/profile/${id}/media`" class="w-full h-full flex items-center justify-center hover:bg-gray-900">Media</NuxtLink>
+                <NuxtLink :to="`/profile/${id}/likes`" class="w-full h-full flex items-center justify-center hover:bg-gray-900">Likes</NuxtLink>
             </div>
-            <div class="flex flex-col gap-2 mt-4" >
-                <PostFeed v-for="i in [true,false,true,false,true,false,true,false,true,false,true,false,]" :image="i" />
+            <div class="flex flex-col gap-2 mt-4 mb-20" ref="el">
+                <PostFeed v-for="post in data.posts" v-bind="post" />
             </div>
         </div>
     </div>
 </template>
+<!-- <template></template> -->
 <style scoped>
 .router-link-exact-active {
     color:white

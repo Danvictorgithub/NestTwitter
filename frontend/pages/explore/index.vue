@@ -9,7 +9,7 @@
             <h1 class="p-4 text-2xl font-bold">Explore</h1>
         </div>
         <div class="flex flex-col gap-2" >
-            <PostFeed v-for="i in [true,false,true,false,true,false,true,false,true,false,true,false,]" :image="i" />
+            <!-- <PostFeed v-for="i in [true,false,true,false,true,false,true,false,true,false,true,false,]" :image="i" /> -->
         </div>
     </div>
 </template>
