@@ -100,7 +100,7 @@
                 </div>
             </div> -->
             <PostFormReply :image="userProfile"/>
-            <PostFeed v-for="post in (data!.commentBy as any)" v-bind="post"/>
+            <PostFeedReply v-for="post in (data!.commentBy as any)" v-bind="post"/>
         </div>
     </article>
 </template>

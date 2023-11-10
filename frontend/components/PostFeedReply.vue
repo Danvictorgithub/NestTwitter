@@ -17,13 +17,14 @@
         author:Author,
         commentId:Number,
         commentTo:PostFeedProps,
+        commentBy:PostFeedProps[],
         _count:{
             commentBy:Number,
             likedBy:Number,
             views:Number,
         }
     }
-    defineProps({
+    const props = defineProps({
         id:Number,
         content:String,
         image:String,
@@ -37,7 +38,7 @@
         commentTo: {
             type:Object as PropType<PostFeedProps>
         },
-        commentB: {
+        commentBy: {
             type:Array as PropType<PostFeedProps[]>,
         },
         _count:{
@@ -87,6 +88,7 @@
             return await navigateTo(`/post/${result.id}`);
         }
     }
+    console.log(props.commentBy)
 </script>
 <template>
     <div class="top-0 absolute h-full w-full z-10 flex justify-center items-center right-0" v-if="modal">
@@ -127,46 +129,15 @@
 
     </div>
         <div>
-            <div class="flex gap-3" v-if="commentTo">
-                <NuxtLink :to="`/profile/${commentTo.authorId}`" class="flex flex-col justify-center items-center after:content-[''] after:border-2 after:h-full after:text-center after:my-2" >
-                    <img :src="commentTo.author!.userProfile" class="rounded-full h-12" v-if="commentTo.author?.userProfile">
-                    <img src="/profile.jpg" class="rounded-full h-12" v-else>
-                </NuxtLink>
-                <div class="pr-4 w-full">
-                    <div class="flex gap-1">
-                        <NuxtLink :to="`/profile/${commentTo.authorId}`">
-                            <p class="font-bold text-white">{{ author!.name }}</p>
-                        </NuxtLink>
-                        <NuxtLink :to="`/profile/${authorId}`">
-                            <p class="text-gray-200">@{{ author!.username }}</p>
-                        </NuxtLink>
-                        <p class="text-gray-200">• {{ createdAt }}</p>
-                    </div>
-                    <NuxtLink :to="`/post/${id?.toString()}`">
-                        <p class="mb-4 text-white">{{ content }}</p>
-                        <img :src="image" class="rounded-2xl" v-if="image">
-                    </NuxtLink>
-                    <!-- <div class="flex align-center justify-between text-white mt-4">
-                        <div @click="openModal" :id="id?.toString()" class="hover:bg-white hover:text-black rounded-xl flex items-center gap-2 transition">
-                            <span class="material-symbols-outlined text-2xl">forum</span>
-                            <p>{{ _count!.commentBy }}</p>
-                        </div>
-                        <div class="hover:bg-white hover:text-black rounded-xl flex items-center gap-2 transition">
-                            <span class="material-symbols-outlined text-2xl">equalizer</span>
-                            <p>{{ _count!.views }}</p>
-                        </div>
-                        <div class="hover:bg-white hover:text-black rounded-xl flex items-center gap-2 transition">
-                            <span class="material-symbols-outlined text-2xl">favorite</span>
-                            <p>{{ _count!.likedBy }}</p>
-                        </div>
-                    </div> -->
-                </div>
-            </div> 
             <div class="flex gap-3">
-                <NuxtLink :to="`/profile/${authorId}`">
+                <NuxtLink :to="`/profile/${authorId}`" v-if="commentBy!.length > 0" class="flex flex-col justify-center items-center after:content-[''] after:border-2 after:h-full after:text-center after:my-2">
                     <img :src="author!.userProfile" class="rounded-full h-12" v-if="author?.userProfile">
                     <img src="/profile.jpg" class="rounded-full h-12" v-else>
                 </NuxtLink>
+                <NuxtLink :to="`/profile/${authorId}`" v-else>
+                    <img :src="author!.userProfile" class="rounded-full h-12" v-if="author?.userProfile">
+                    <img src="/profile.jpg" class="rounded-full h-12" v-else>
+                </NuxtLink>a
                 <div class="pr-4 w-full">
                     <div class="flex gap-1">
                         <NuxtLink :to="`/profile/${authorId}`">
@@ -197,5 +168,41 @@
                     </div>
                 </div>
             </div>
+
+            <div class="flex gap-3 bg-gray-900 rounded-lg mt-2 " v-if="commentBy!.length > 0" v-for="authorReply in commentBy">
+                <NuxtLink :to="`/profile/${authorReply.authorId}`" >
+                    <img :src="authorReply.author!.userProfile" class="rounded-full h-12" v-if="authorReply.author?.userProfile">
+                    <img src="/profile.jpg" class="rounded-full h-12" v-else>
+                </NuxtLink>
+                <div class="pr-4 w-full">
+                    <div class="flex gap-1">
+                        <NuxtLink :to="`/profile/${authorReply.authorId}`">
+                            <p class="font-bold text-white">{{ authorReply.author!.name }}</p>
+                        </NuxtLink>
+                        <NuxtLink :to="`/profile/${authorId}`">
+                            <p class="text-gray-200">@{{ authorReply.author!.username }}</p>
+                        </NuxtLink>
+                        <p class="text-gray-200">• {{ authorReply.createdAt }}</p>
+                    </div>
+                    <NuxtLink :to="`/post/${id?.toString()}`">
+                        <p class="mb-4 text-white">{{ authorReply.content }}</p>
+                        <img :src="authorReply.image.toString()" class="rounded-2xl" v-if="authorReply.image">
+                    </NuxtLink>
+                    <!-- <div class="flex align-center justify-between text-white mt-4">
+                        <div @click="openModal" :id="id?.toString()" class="hover:bg-white hover:text-black rounded-xl flex items-center gap-2 transition">
+                            <span class="material-symbols-outlined text-2xl">forum</span>
+                            <p>{{ _count!.commentBy }}</p>
+                        </div>
+                        <div class="hover:bg-white hover:text-black rounded-xl flex items-center gap-2 transition">
+                            <span class="material-symbols-outlined text-2xl">equalizer</span>
+                            <p>{{ _count!.views }}</p>
+                        </div>
+                        <div class="hover:bg-white hover:text-black rounded-xl flex items-center gap-2 transition">
+                            <span class="material-symbols-outlined text-2xl">favorite</span>
+                            <p>{{ _count!.likedBy }}</p>
+                        </div>
+                    </div> -->
+                </div>
+            </div> 
         </div>
 </template>
