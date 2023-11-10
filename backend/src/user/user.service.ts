@@ -32,29 +32,78 @@ export class UserService {
   async findAll():Promise<{username:String,name:String,createdAt:Date}[]> {
     return await this.prisma.user.findMany({select:{username:true,name:true,createdAt:true}});
   }
-
-  async findOne(id: number) {
-    const user = await this.prisma.user.findUnique({
-      where:{id},
-      select:{
-        username:true,
-        name:true,
-        userCover:true,
-        userProfile:true,
-        createdAt:true,
-        _count:{select:{followers:true,following:true}},
-        posts:{include:{
-          author:{
-            select:{
-              username:true,
-              name:true,
-              userProfile:true,
-              createdAt:true,
+  
+  async findOne(id: number,skip=null,take=null) {
+    let user;
+    if (!skip || !take) {
+      user = await this.prisma.user.findUnique({
+        where:{id},
+        select:{
+          username:true,
+          name:true,
+          userCover:true,
+          userProfile:true,
+          createdAt:true,
+          _count:{select:{followers:true,following:true}},
+          posts:{include:{
+            author:{
+              select:{
+                username:true,
+                name:true,
+                userProfile:true,
+                createdAt:true,
+              },
+            },
+            commentTo:{
+              include:{
+                author:{select:{
+                  username:true,
+                  name:true,
+                  userProfile:true,
+                  createdAt:true, 
+                }}
+              }
+            },
+            _count:{select:{commentBy:true,views:true,likedBy:true}}},
+            orderBy:{
+              createdAt:'desc'
             }
           },
-          commentTo:true,_count:{select:{commentBy:true}}}},
-      },
-    }); 
+        },
+      }); 
+    }
+    else {
+      skip = parseInt(skip);
+      take = parseInt(take);
+      user = await this.prisma.user.findUnique({
+        where:{id},
+        select:{
+          username:true,
+          name:true,
+          userCover:true,
+          userProfile:true,
+          createdAt:true,
+          _count:{select:{followers:true,following:true}},
+          posts:{include:{
+            author:{
+              select:{
+                username:true,
+                name:true,
+                userProfile:true,
+                createdAt:true,
+              },
+            },
+            commentTo:true,
+            _count:{select:{commentBy:true,views:true,likedBy:true}}},
+            skip,
+            take,
+            orderBy:{
+              createdAt:'desc'
+            }
+          },
+        },
+      }); 
+    }
     if (user) {
       return user;
     }

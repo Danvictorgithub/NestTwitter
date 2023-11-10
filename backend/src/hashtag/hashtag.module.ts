@@ -1,9 +1,11 @@
 import { Module } from '@nestjs/common';
 import { HashtagService } from './hashtag.service';
-import { PrismaClient } from '@prisma/client';
+import { HashtagController } from './hashtag.controller';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Module({
-    providers:[HashtagService,PrismaClient],
-    exports:[HashtagService]
+  controllers: [HashtagController],
+  providers: [PrismaService,HashtagService],
+  exports:[HashtagService]
 })
 export class HashtagModule {}

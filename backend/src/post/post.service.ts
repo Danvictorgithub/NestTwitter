@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -16,23 +16,15 @@ export class PostService {
     ) { }
 
   async create(createPostDto: CreatePostDto,BearerToken:string,file) {
-    // const token = BearerToken.split(' ')[1];
-    // const UserObj:any = this.jwtService.decode(token);
-    // if (file !== undefined) {
-    //   createPostDto.image = await this.supabase.uploadFile(file);
-    // }
-    // const post = await this.prisma.post.create({data:{...createPostDto,author:{connect:{id:UserObj.id}}}});
-    // const hashtags = this.hashtagService.findHashtags(post.content);
-    // console.log(hashtags);
-    // const numOfHashtags = await this.hashtagService.create(hashtags,post.id);
-    // return {...post,count:numOfHashtags};
-
-    return await this.prisma.hashtag.findMany({
-      include: {
-        posts: true
-      },
-    });
-    
+    const token = BearerToken.split(' ')[1];
+    const UserObj:any = this.jwtService.decode(token);
+    if (file !== undefined) {
+      createPostDto.image = await this.supabase.uploadFile(file);
+    }
+    const post = await this.prisma.post.create({data:{...createPostDto,author:{connect:{id:UserObj.id}}}});
+    const hashtags = this.hashtagService.findHashtags(post.content);
+    const numOfHashtags = await this.hashtagService.create(hashtags,post.id);
+    return {...post,count:numOfHashtags};    
   }
 
   async createReply(createPostDto: CreatePostDto,BearerToken:string,file,id:string) {
@@ -42,18 +34,65 @@ export class PostService {
       createPostDto.image = await this.supabase.uploadFile(file);
     }
     const post = await this.prisma.post.create({data:{...createPostDto,commentTo:{connect:{id:parseInt(id)}},author:{connect:{id:UserObj.id}}}});
-    return post;
+    const hashtags = this.hashtagService.findHashtags(post.content);
+    const numOfHashtags = await this.hashtagService.create(hashtags,post.id);
+
+    return {...post,count:{numOfHashtags}};
   }
 
   async findAll() {
     return await this.prisma.post.findMany({include:{commentBy:true}});
   }
-
-  findOne(id: number,BearerToken:string) {
-    const token = BearerToken.split(' ')[1];
-    const UserObj:any = this.jwtService.decode(token);
+  async findOne(id: number) {
+    const idAuthor = await this.prisma.post.findUnique({
+      where:{id},
+      select:{authorId:true}
+    });
+    const post = await this.prisma.post.findUnique({
+      where:{id},
+      include:{
+        author:{
+          select:{
+            id:true,
+            username:true,
+            name:true,
+            userProfile:true
+          }
+        },
+        commentTo:{
+          include:{
+            author:{select:{
+              id:true,
+              username:true,
+              name:true,
+              userProfile:true 
+            }}
+          }
+        },
+        commentBy:{
+          include: {
+            author:{
+              select: {
+                id:true,
+                username:true,
+                name:true,
+                userProfile:true
+              },
+            },
+            commentBy:{
+              where:{authorId:idAuthor.authorId}
+            },
+            _count:{select:{views:true,likedBy:true,commentBy:true}},
+          }
+        },
+        _count:{select:{views:true,likedBy:true,commentBy:true}}
+      },
+    });
     
-    return this.prisma.post.findUnique({where:{id}});
+    if (!post) {
+      throw new NotFoundException("Post not found");
+    }
+    return post;
   }
 
   update(id: number, updatePostDto: UpdatePostDto) {

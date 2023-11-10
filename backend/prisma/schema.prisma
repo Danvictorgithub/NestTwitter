@@ -19,6 +19,7 @@ model User {
   isAdmin Boolean @default(false)
   userProfile String @default("")
   userCover String @default("")
+  likes Post[] @relation("LikesToPost")
   followers User[]  @relation("UserFollows")
   following  User[]  @relation("UserFollows")
   posts Post[]
@@ -38,6 +39,7 @@ model Post {
   commentTo Post? @relation("PostComments",fields: [commentId],references: [id])
   commentId Int?
   commentBy Post[] @relation("PostComments")
+  likedBy User[] @relation("LikesToPost")
 }
 
 model Hashtag {

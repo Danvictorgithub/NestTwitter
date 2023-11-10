@@ -37,7 +37,7 @@ export class PostController {
 
   @Get(':id')
   findOne(@Param('id') id: string,@Headers('Authorization') BearerToken:string) {
-    return this.postService.findOne(+id,BearerToken);
+    return this.postService.findOne(+id);
   }
 
   @Patch(':id')

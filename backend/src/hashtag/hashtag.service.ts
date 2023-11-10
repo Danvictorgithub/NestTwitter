@@ -1,9 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaClient } from '@prisma/client';
+import { CreateHashtagDto } from './dto/create-hashtag.dto';
+import { UpdateHashtagDto } from './dto/update-hashtag.dto';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class HashtagService {
-    constructor(private prisma:PrismaClient){}
+  constructor(private prisma:PrismaService){}
+
     findHashtags(content:string) {
         const hashtags = content.match(/#[a-zA-Z0-9]+/g);
         return Array.from(new Set(hashtags));
@@ -25,4 +28,28 @@ export class HashtagService {
         );
         return resultCount;
     }
+  // create(createHashtagDto: CreateHashtagDto) {
+  //   return 'This action adds a new hashtag';
+  // }
+
+  async findAll() {
+    return await this.prisma.hashtag.findMany();
+  }
+
+  async findOne(id: number) {
+    return await this.prisma.hashtag.findUnique({
+      where:{ id: id },
+      include: {
+        posts: true
+      },
+    }); 
+  }
+
+  // update(id: number, updateHashtagDto: UpdateHashtagDto) {
+  //   return `This action updates a #${id} hashtag`;
+  // }
+
+  // remove(id: number) {
+  //   return `This action removes a #${id} hashtag`;
+  // }
 }
