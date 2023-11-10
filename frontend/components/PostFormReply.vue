@@ -1,10 +1,11 @@
 <script setup lang="ts">
     defineProps({
-        image:String
+        image:String,
     })
     import {useFileDialog} from "@vueuse/core"
     // File handling
-    const {createPost} = useUser();
+    const {id} = useRoute().params;
+    const {createPostReply} = useUser();
     const formResponse = ref("");
     const formData:Ref<{content:string,image:null|File}> = ref({
         content:'',
@@ -19,7 +20,7 @@
         uploadedImagepreview.value = URL.createObjectURL(files[0]);
     })
     async function uploadPost() {
-        const result:any = await createPost(formData.value.content, formData.value.image as File);
+        const result:any = await createPostReply(formData.value.content, formData.value.image as File,id as unknown as number);
         if (result.statusCode == 400 || result.statusCode == 422) {
             formResponse.value = (Array.isArray(result.message)) ? result.message[0] : result.message;
         } 

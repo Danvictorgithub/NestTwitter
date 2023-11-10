@@ -135,16 +135,16 @@
                 <div class="pr-4 w-full">
                     <div class="flex gap-1">
                         <NuxtLink :to="`/profile/${commentTo.authorId}`">
-                            <p class="font-bold text-white">{{ commentTo.author!.name }}</p>
+                            <p class="font-bold text-white">{{ author!.name }}</p>
                         </NuxtLink>
                         <NuxtLink :to="`/profile/${authorId}`">
-                            <p class="text-gray-200">@{{ commentTo.author!.username }}</p>
+                            <p class="text-gray-200">@{{ author!.username }}</p>
                         </NuxtLink>
-                        <p class="text-gray-200">• {{ commentTo.createdAt }}</p>
+                        <p class="text-gray-200">• {{ createdAt }}</p>
                     </div>
                     <NuxtLink :to="`/post/${id?.toString()}`">
-                        <p class="mb-4 text-white">{{ commentTo.content }}</p>
-                        <img :src="commentTo.image.toString()" class="rounded-2xl" v-if="commentTo.image">
+                        <p class="mb-4 text-white">{{ content }}</p>
+                        <img :src="image" class="rounded-2xl" v-if="image">
                     </NuxtLink>
                     <!-- <div class="flex align-center justify-between text-white mt-4">
                         <div @click="openModal" :id="id?.toString()" class="hover:bg-white hover:text-black rounded-xl flex items-center gap-2 transition">

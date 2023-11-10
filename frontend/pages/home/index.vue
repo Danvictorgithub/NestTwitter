@@ -2,6 +2,7 @@
     definePageMeta({
         middleware:'auth'
     })
+    const userObj = useUserObj();
 </script>
 <template>
     <div class="flex-1 flex flex-col w-[600px] text-white p-2">
@@ -12,7 +13,7 @@
                 <p>Following</p>
             </div>
         </div>
-        <PostForm />
+        <PostForm :image="userObj.userProfile"/>
         <div class="flex flex-col gap-2" >
             <!-- <PostFeed v-for="i in [true,false,true,false,true,false,true,false,true,false,true,false,]" :image="i" /> -->
         </div>

@@ -10,6 +10,9 @@
     const {data, error, pending}:any = await useFetch(`${apiLink.value}user/${id}`, {
         transform:(datas:any) => {
             datas.createdAt = format(new Date(datas.createdAt), 'MMM dd yyyy');
+            datas.posts.forEach((post:any) => {
+                post.createdAt = format(new Date(post.createdAt), 'MMM dd yyyy');
+            });
             return datas;
         },
         headers: {
@@ -25,7 +28,7 @@
 <template>
     <div class="flex-1 flex flex-col px-4 w-[600px] text-white">
         <div class="sticky top-0 h-[50px] z-10 backdrop-blur-md">
-            <NuxtLink to='/' class="h-12 flex items-center text-white mb-6">
+            <NuxtLink to='/home' class="h-12 flex items-center text-white mb-6">
                 <span class="material-symbols-outlined text-xl mx-3">arrow_back</span> 
                 <p class="text-2xl font-bold">Post</p>
             </NuxtLink>

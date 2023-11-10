@@ -21,5 +21,6 @@ export default defineNuxtRouteMiddleware(async (to,from) => {
     if (result) {
         const userObj = useUserObj();
         userObj.value = result;
+        console.log(userObj.value.id);
     }
 })
